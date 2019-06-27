@@ -103,6 +103,9 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-
-#Maze
+# Maze
 protocol.template
+
+# others
+*.swp
+
