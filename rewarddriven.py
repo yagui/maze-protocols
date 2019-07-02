@@ -105,6 +105,7 @@ class RewardDrivenRandomBlock (MazeProtocols):
     else:
         self.currentTrial = 'R'
     self.blockTrials = randomInt(self.blockMin,self.blockMax)
+    logger.info('New Block. Trials Count = {a}, Correct Side = {b}'.format(a=int(self.blockTrials),b=self.currentTrial))
     self.playSound(1)
 
 
@@ -112,15 +113,15 @@ class RewardDrivenRandomBlock (MazeProtocols):
     randomDelay(2,3)
     self.trialNum += 1
     self.blockTrials -= 1
+    logger.info('Block trials remaining = {a}'.format(a=int(self.blockTrials)))
 
     self.trials.append([self.trialNum, self.currentTrial,0])
         
     self.trialInit = time.time()
+    self.setSyncTrial(self.currentTrial)
     if self.currentTrial == 'L':
-      self.setSyncTrial(1)
       self.setSyncH([2,7])
     else:
-      self.setSyncTrial(2)
       self.setSyncH([3,8])
 
     self.trialsCount[self.currentTrial] +=1
@@ -175,7 +176,12 @@ class RewardDrivenRandomBlock (MazeProtocols):
       time.sleep(.1)
       pass
     
+    self.closeGateFast('IBR')
+    self.openGateFast('OBR')
+    self.startTraining()
     self.timeInitTraining = time.time()
+    time.sleep(10)
+    self.switchSide()
     self.startTrial()
 
     while True:
@@ -216,6 +222,7 @@ class RewardDrivenRandomBlock (MazeProtocols):
               self.multiDrop('L')
               self.trialsCorrect['L'] += 1
               self.trials[-1][2] = 1
+              time.sleep(1)
             self.printStats()
             if self.blockTrials == 0:
                 #play sound
@@ -225,13 +232,13 @@ class RewardDrivenRandomBlock (MazeProtocols):
         if self.myLastSensor=='BL':
           logger.info('Rat at {a}'.format(a='BL'))
           self.state = 'returning left'
-          self.startTrial()
 
       elif self.state == 'returning left':
         if self.myLastSensor=='C':
           logger.info('Rat at {a}'.format(a='C'))
           self.closeGateFast('IBL')
           self.state = 'start'
+          self.startTrial()
 
       elif self.state == 'going right':
         if self.myLastSensor=='R':
@@ -251,6 +258,7 @@ class RewardDrivenRandomBlock (MazeProtocols):
               self.multiDrop('R')
               self.trialsCorrect['R'] += 1
               self.trials[-1][2] = 1
+              time.sleep(1)
             self.printStats()
             if self.blockTrials == 0:
                 #play sound
@@ -260,7 +268,6 @@ class RewardDrivenRandomBlock (MazeProtocols):
         if self.myLastSensor=='BR':
           logger.info('Rat at {a}'.format(a='BR'))
           self.state = 'returning right'
-          self.startTrial()
               
       elif self.state == 'returning right':
         if self.myLastSensor=='C':
