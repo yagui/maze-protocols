@@ -208,9 +208,17 @@ class RandomChoice (MazeProtocols):
         elif self.myLastSensor=='L':
           logger.warning('Reached left without passing through UL')
           self.state='going left'
+          self.closeGateFast('IUR')
+          if self.currentTrial=='R':
+            self.playSound(3)
+            logger.info('playing white noise')
         elif self.myLastSensor=='R':
           logger.warning('Reached right without passing through UR')
           self.state='going right'
+          self.closeGateFast('IUL')
+          if self.currentTrial=='L':
+            self.playSound(3)
+            logger.info('playing white noise')
         elif self.myLastSensor=='C':
           pass
         else:
@@ -248,7 +256,12 @@ class RandomChoice (MazeProtocols):
           self.state = 'returning left'
         elif self.myLastSensor=='C':
           logger.warning('Reached Center without passing through BL')
-          ## should do the same as the next state
+          ## should do the same as returning left
+          logger.info('Rat at {a}'.format(a='C'))
+          self.closeGateFast('IBL')
+          self.stopSound()
+          self.state = 'start'
+          self.startTrial()
         elif self.myLastSensor=='L' or self.myLastSensor=='UL':
           pass
         else:
@@ -295,7 +308,12 @@ class RandomChoice (MazeProtocols):
           self.state = 'returning right'
         elif self.myLastSensor=='C':
           logger.warning('Reached Center without passing through BR')
-          ## should do the same as the next state
+          ## should do the same as returning right
+          logger.info('Rat at {a}'.format(a='C'))
+          self.closeGateFast('IBR')
+          self.stopSound()
+          self.state = 'start'
+          self.startTrial()
         elif self.myLastSensor=='R' or self.myLastSensor=='UR':
           pass
         else:
@@ -368,7 +386,7 @@ class OperantChoice (MazeProtocols):
     self.addTone(key=2,duration=options['toneRightDuration'],freq=options['toneRightFrecuency'],volume=options['toneRightVolume'])
     logger.info('Tone 1 asociated with Left at {a} Hz, Volume {b}'.format(a=options['toneLeftFrecuency'],b=options['toneLeftVolume']))
     logger.info('Tone 2 asociated with Right at {a} Hz, Volume {b}'.format(a=options['toneRightFrecuency'],b=options['toneRightVolume']))
-    self.addWhiteNoise(key=3,duration=10.0,volume=1.0)
+    self.addWhiteNoise(key=3,duration=20.0,volume=1.0)
     logger.info('White Noise, Volume 1.0')
     time.sleep(.1)
     self.myLastSensor = None
@@ -496,10 +514,18 @@ class OperantChoice (MazeProtocols):
             logger.info('playing white noise')
         elif self.myLastSensor=='L':
           logger.warning('Reached left without passing through UL')
+          self.closeGateFast('IUR')
           self.state='going left'
+          if self.currentTrial=='R':
+            self.playSound(3)
+            logger.info('playing white noise')
         elif self.myLastSensor=='R':
           logger.warning('Reached right without passing through UR')
+          self.closeGateFast('IUL')
           self.state='going right'
+          if self.currentTrial=='L':
+            self.playSound(3)
+            logger.info('playing white noise')
         elif self.myLastSensor=='C':
           pass
         else:
@@ -537,7 +563,12 @@ class OperantChoice (MazeProtocols):
           self.state = 'returning left'
         elif self.myLastSensor=='C':
           logger.warning('Reached Center without passing through BL')
-          ## should do the same as the next state
+          ## should do the same as returning left
+          logger.info('Rat at {a}'.format(a='C'))
+          self.closeGateFast('IBL')
+          self.stopSound()
+          self.state = 'start'
+          self.startTrial()
         elif self.myLastSensor=='L' or self.myLastSensor=='UL':
           pass
         else:
@@ -584,7 +615,12 @@ class OperantChoice (MazeProtocols):
           self.state = 'returning right'
         elif self.myLastSensor=='C':
           logger.warning('Reached Center without passing through BR')
-          ## should do the same as the next state
+          ## should do the same as returning right
+          logger.info('Rat at {a}'.format(a='C'))
+          self.closeGateFast('IBR')
+          self.stopSound()
+          self.startTrial()
+          self.state = 'start'
         elif self.myLastSensor=='R' or self.myLastSensor=='UR':
           pass
         else:
@@ -816,7 +852,11 @@ class Operant (MazeProtocols):
           self.state = 'returning left'
         elif self.myLastSensor=='C':
           logger.warning('Reached Center without passing through BL')
-          ## should do the same as the next state
+          ## should do the same as returning left
+          logger.info('Rat at {a}'.format(a='C'))
+          self.closeGateFast('IBL')
+          self.state = 'start'
+          self.startTrial()
         elif self.myLastSensor=='L' or self.myLastSensor=='UL':
           pass
         else:
@@ -863,7 +903,11 @@ class Operant (MazeProtocols):
           self.state = 'returning right'
         elif self.myLastSensor=='C':
           logger.warning('Reached Center without passing through BR')
-          ## should do the same as the next state
+          ## should do the same as returning right
+          logger.info('Rat at {a}'.format(a='C'))
+          self.closeGateFast('IBR')
+          self.state = 'start'
+          self.startTrial()
         elif self.myLastSensor=='R' or self.myLastSensor=='UR':
           pass
         else:
