@@ -117,7 +117,7 @@ class RandomChoice (MazeProtocols):
     self.setSyncTrial(self.currentTrial)
     self.playSound(nextTone)
     self.trialInit = time.time()
-    if self.currentTrial = 'L':
+    if self.currentTrial == 'L':
       self.setSyncH([2,7])
     else:
       self.setSyncH([3,8])
@@ -128,7 +128,7 @@ class RandomChoice (MazeProtocols):
     while self.isSoundPlaying():
       time.sleep(.1)
 
-    if self.currentTrial = 'L':
+    if self.currentTrial == 'L':
       self.setSyncL([2,7])
     else:
       self.setSyncL([3,8])
@@ -246,7 +246,7 @@ class RandomChoice (MazeProtocols):
         if self.myLastSensor=='BL':
           logger.info('Rat at {a}'.format(a='BL'))
           self.state = 'returning left'
-        elif sefl.myLastSensor=='C':
+        elif self.myLastSensor=='C':
           logger.warning('Reached Center without passing through BL')
           ## should do the same as the next state
         elif self.myLastSensor=='L' or self.myLastSensor=='UL':
@@ -293,7 +293,7 @@ class RandomChoice (MazeProtocols):
         if self.myLastSensor=='BR':
           logger.info('Rat at {a}'.format(a='BR'))
           self.state = 'returning right'
-        elif sefl.myLastSensor=='C':
+        elif self.myLastSensor=='C':
           logger.warning('Reached Center without passing through BR')
           ## should do the same as the next state
         elif self.myLastSensor=='R' or self.myLastSensor=='UR':
@@ -337,16 +337,15 @@ class OperantChoice (MazeProtocols):
     logger.info('Options readed from configuration file')
     for key in options:
         logger.info('Option {a} = {b}'.format(a=key,b=options[key]))
-    logger.info('Protocol: {a}, Version: {b}'.format(a=PROTOCOL_NAME,b=PROTOCOL_VERSION))
 
     self.rewardWindow = options['rewardWindow']
     self.multidropNum = options['multidropNum']
     if options['side']=='Left':
-      self.side = 'L'
+      self.currentTrial = 'L'
     elif options['side']=='Right':
-      self.side = 'R'
+      self.currentTrial = 'R'
     else:
-      raise ValueError("Option 'side' should be either 'Left' or 'Right'")
+      raise ValueError("Option 'side' should be either 'Left' or 'Right'. side={a}".format(a=options['side']))
 
     self.setMultiDrop(self.multidropNum)
     self.state = 'start'
@@ -354,15 +353,14 @@ class OperantChoice (MazeProtocols):
     self.closeGateFast('IUR')
     self.openGateFast('OUL')
     self.openGateFast('OUR')
-    self.openGateFast('OBL') # maybe closed
-    self.closeGateFast('OBR') # maybe closed
+    self.openGateFast('OBL')
+    self.closeGateFast('OBR')
     self.closeGateFast('IBL')
     self.openGateFast('IBR')
     self.trialNum = 0
     self.rewardDone = False
     self.timeInitTraining = 0
     self.trialInit = 0
-    self.currentTrial = ''
     self.trialsCount = {'L':0,'R':0}
     self.trialsCorrect = {'L':0,'R':0}
     self.trials = []
@@ -404,12 +402,11 @@ class OperantChoice (MazeProtocols):
     randomDelay(2,4)
 
     self.trialNum +=1
-    nextTone=self.side
-    if nextTone == 1:
-        self.currentTrial = 'L'
+    if self.currentTrial=='L':
+      nextTone = 1
     else:
-        self.currentTrial = 'R'
-        
+      nextTone = 2
+
     self.trials.append([self.trialNum, self.currentTrial,0])
     self.setSyncTrial(self.currentTrial)
     self.playSound(nextTone)
@@ -538,7 +535,7 @@ class OperantChoice (MazeProtocols):
         if self.myLastSensor=='BL':
           logger.info('Rat at {a}'.format(a='BL'))
           self.state = 'returning left'
-        elif sefl.myLastSensor=='C':
+        elif self.myLastSensor=='C':
           logger.warning('Reached Center without passing through BL')
           ## should do the same as the next state
         elif self.myLastSensor=='L' or self.myLastSensor=='UL':
@@ -585,7 +582,7 @@ class OperantChoice (MazeProtocols):
         if self.myLastSensor=='BR':
           logger.info('Rat at {a}'.format(a='BR'))
           self.state = 'returning right'
-        elif sefl.myLastSensor=='C':
+        elif self.myLastSensor=='C':
           logger.warning('Reached Center without passing through BR')
           ## should do the same as the next state
         elif self.myLastSensor=='R' or self.myLastSensor=='UR':
@@ -632,11 +629,11 @@ class Operant (MazeProtocols):
     self.rewardWindow = options['rewardWindow']
     self.multidropNum = options['multidropNum']
     if options['side']=='Left':
-      self.side = 'L'
+      self.currentTrial = 'L'
     elif options['side']=='Right':
-      self.side = 'R'
+      self.currentTrial = 'R'
     else:
-      raise ValueError("Option 'side' should be either 'Left' or 'Right'")
+      raise ValueError("Option 'side' should be either 'Left' or 'Right'. side={a}".format(a=options['side']))
 
     self.setMultiDrop(self.multidropNum)
     self.state = 'start'
@@ -652,7 +649,6 @@ class Operant (MazeProtocols):
     self.rewardDone = False
     self.timeInitTraining = 0
     self.trialInit = 0
-    self.currentTrial = ''
     self.trialsCount = {'L':0,'R':0}
     self.trialsCorrect = {'L':0,'R':0}
     self.trials = []
@@ -692,11 +688,10 @@ class Operant (MazeProtocols):
     randomDelay(2,4)
 
     self.trialNum +=1
-    nextTone=self.side
-    if nextTone == 1:
-        self.currentTrial = 'L'
+    if self.currentTrial=='L':
+      nextTone = 1
     else:
-        self.currentTrial = 'R'
+      nextTone = 2
 
     self.trials.append([self.trialNum, self.currentTrial,0])
     self.setSyncTrial(self.currentTrial)
@@ -720,7 +715,7 @@ class Operant (MazeProtocols):
 
     time.sleep(.2)
 
-    if self.side == 'L':
+    if self.currentTrial == 'L':
       self.openGate('IUL')
     else:
       self.openGate('IUR')
@@ -819,7 +814,7 @@ class Operant (MazeProtocols):
         if self.myLastSensor=='BL':
           logger.info('Rat at {a}'.format(a='BL'))
           self.state = 'returning left'
-        elif sefl.myLastSensor=='C':
+        elif self.myLastSensor=='C':
           logger.warning('Reached Center without passing through BL')
           ## should do the same as the next state
         elif self.myLastSensor=='L' or self.myLastSensor=='UL':
@@ -866,7 +861,7 @@ class Operant (MazeProtocols):
         if self.myLastSensor=='BR':
           logger.info('Rat at {a}'.format(a='BR'))
           self.state = 'returning right'
-        elif sefl.myLastSensor=='C':
+        elif self.myLastSensor=='C':
           logger.warning('Reached Center without passing through BR')
           ## should do the same as the next state
         elif self.myLastSensor=='R' or self.myLastSensor=='UR':
