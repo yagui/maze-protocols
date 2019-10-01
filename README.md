@@ -6,7 +6,8 @@ Protocols for different trainings to use with the project
 
 Inside the protocols folder
 
-```git init
+```
+git init
 git remote add origin https://github.com/yagui/maze-protocols.git
 git pull origin master
 git branch --set-upstream-to=origin/master master
